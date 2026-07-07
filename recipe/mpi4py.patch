@@ -4,26 +4,13 @@ Date: Sat, 4 Oct 2025 10:47:13 +0200
 Subject: [PATCH] Fully support mpi4py
 
 ---
- gpaw/mpi4pywrapper.py | 50 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+ gpaw/mpi4pywrapper.py | 50 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
 diff --git a/gpaw/mpi4pywrapper.py b/gpaw/mpi4pywrapper.py
 index 442b5bb..38a5acd 100644
 --- a/gpaw/mpi4pywrapper.py
 +++ b/gpaw/mpi4pywrapper.py
-@@ -1,8 +1,11 @@
- try:
--    from mpi4py.MPI import Request, SUM, MAX, IN_PLACE
-+    from mpi4py.MPI import (Request, SUM, MAX, MIN, IN_PLACE, IDENT,
-+                            CONGRUENT, SIMILAR, UNEQUAL)
- except ImportError:
-     pass
- 
-+import numpy as np
-+
- 
- class MPI4PYWrapper:
-     def __init__(self, comm, parent=None):
 @@ -22,6 +25,9 @@ def new_communicator(self, ranks):
      def max_scalar(self, a, root=-1):
          return self.sum_scalar(a, root=-1, _op=MAX)
